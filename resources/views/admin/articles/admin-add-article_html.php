@@ -1,5 +1,5 @@
 <div class="admin">
-    <!-- Affichage des erreurs et succès -->
+    <!-- --Affichage des erreurs et succès -->
     <?php
 
     if (! empty($error)) { ?>
