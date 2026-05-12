@@ -17,7 +17,11 @@ $query->execute(compact('article_id'));
 $article = $query->fetch();
 // var_dump($article);
 //  die;
-$sql = 'SELECT * FROM comments WHERE article_id= :article_id';
+$sql = 'SELECT comments.*, users.username
+ FROM comments
+ JOIN users ON comments.user_id = users.id
+ WHERE article_id= :article_id';
+
 $query = $pdo->prepare($sql);
 $query->execute(compact('article_id'));
 $commentaires = $query->fetchAll();
@@ -28,7 +32,7 @@ $commentaires = $query->fetchAll();
 
   //----------Nombre d'utilisateurs 
   $userCount = $pdo->query('SELECT COUNT(*) AS count FROM users')->fetch(PDO::FETCH_ASSOC)['count'];
-
+$commentsCount = $pdo->query('SELECT COUNT(*) AS count FROM comments')->fetch(PDO::FETCH_ASSOC)['count'];
   $articlesCount = $pdo->query('SELECT COUNT(*) AS count FROM articles')->fetch(PDO::FETCH_ASSOC)['count'];
 
 $latestArticles = $pdo->query('SELECT * FROM articles ORDER BY created_at DESC LIMIT  5')->fetch(PDO::FETCH_ASSOC);

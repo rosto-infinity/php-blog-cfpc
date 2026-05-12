@@ -306,78 +306,82 @@
 
 <div class="container">
     <div class="main-content">
-        <h1 class="article-title"><?=  htmlspecialchars($article['title'])?></h1>
+        <h1 class="article-title"><?= $article['title'] ?? '' ?></h1>
 
         <?php
 
         if (isset($_SESSION['error'])) { ?>
             <div class="error-message"><?= $_SESSION['error'] ?></div>
         <?php } ?>
- 
-        <div class="article-body"><?=  $article['content']?></div><br><br>
-        <em style="color:#8d079c; margin-top: 10px;">Posté le <?=  $article['created_at']?></em><br>
 
-       <?php if(count($commentaires) === 0)  {?>
+        <div class="article-body"><?= $article['content'] ?? '' ?></div><br><br>
+        <em style="color:#8d079c; margin-top: 10px;">Posté le <?= $article['created_at'] ?? '' ?></em><br>
+
+        <?php if (count($commentaires) === 0) { ?>
             <h2 class="comment-heading">
                 Il n'y a pas encore de commentaires pour cet article... <strong>SOYEZ LE PREMIER ! :D</strong>
             </h2>
-         <?php }else {?>
+        <?php } else { ?>
             <h2 class="comment-heading">
-                Il y a déjà <?=  count($commentaires)?> réaction<?=  count($commentaires)>0 ? 's' : '' ?>
+                Il y a déjà <?= count($commentaires) ?> réaction<?= count($commentaires) > 0 ? 's' : '' ?>
             </h2>
-             <?php } ?>
-         
+            <?php foreach ($commentaires as $commentaire) : ?>
+
                 <div class="comment">
-                    <h3 class="comment-author">Commentaire de : ...</h3>
+                    <h3 class="comment-author">Commentaire de :
+                        <?= $commentaire['username'] ?> </h3>
                     <small class="comment-date">10/2026</small>
                     <blockquote class="comment-content">
-                        <em><Mon commentaire...</em>
+                        <em> <?= $commentaire['content'] ?></em>
                     </blockquote>
+                    <?php
+                    $isAdmin = isset($_SESSION['auth']['role']) && $_SESSION['auth']['role'] === Role::ADMIN->value;
 
-                    
+                    if (isset($_SESSION['auth']) && ($_SESSION['auth']['id'] === $commentaire['user_id'] || $isAdmin)) : ?>
+
                         <a
                             href="#user-comment-delete.php"
                             class="delete-comment-link"
                             onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">
                             Supprimer
                         </a>
-                 
+                    <?php endif ?>
                 </div>
-        
-       
 
-      
+            <?php endforeach ?>
+        <?php } ?>
+        <?php if (isset($_SESSION['auth'])) { ?>
             <!-- Formulaire de commentaire -->
             <form action="user-comment-save.php" method="POST" class="comment-form">
                 <h3 class="comment-form-heading">Vous voulez réagir ? N'hésitez pas !</h3>
 
                 <textarea name="content" cols="30" rows="10" placeholder="Votre commentaire..." class="comment-form-content"></textarea><br>
-                <input type="hidden" name="article_id" value="">
-                <input type="hidden" name="user_id" value="">
+                <input type="hidden" name="article_id" value="<?= $article_id ?? '' ?>">
+                <input type="hidden" name="user_id" value="<?= $_SESSION['auth']['id'] ?>">
                 <button style="width: 250px; margin-bottom: 11px;" type="submit" class="comment-form-submit">COMMENTER !</button>
             </form>
-     
+        <?php } else { ?>
             <p>Veuillez vous connecter ou vous inscrire pour commenter.</p>
             <a href="register.php">S'inscrire</a> | <a href="login.php">Se connecter</a>
-     
+        <?php } ?>
 
-        <p><a href="index.php">← Retour à l'accueil</a></p>
+        <p><a href="/">← Retour à l'accueil</a></p>
     </div>
 
     <div class="sidebar">
 
         <div class="stats">
             <h3><i class="fas fa-chart-bar"></i> Statistiques</h3>
-            <p><i class="fas fa-users"></i> <u> Nombre d'utilisateurs : <?= $userCount  ?></u></p>
-            <p><i class="fas fa-comments"></i> Nombre de commentaires : <u>14</u></p>
-            <p><i class="fas fa-file-alt"></i> Nombre d'articles : <u><?= $articlesCount  ?></u></p>
-          
+            <p><i class="fas fa-users"></i> <u> Nombre d'utilisateurs : <?= $userCount ?? ''  ?></u></p>
+            <p><i class="fas fa-comments"></i> Nombre de commentaires : <u><?= $commentsCount ?? '' ?></u></p>
+            <p><i class="fas fa-file-alt"></i> Nombre d'articles : <u><?= $articlesCount ?? '' ?></u></p>
+
         </div>
 
         <h3><i class="fas fa-newspaper"></i> Derniers articles</h3>
         <ul>
-                <li><i class="fas fa-file"></i><a href="#user-article-show.php">Titre article</a></li>
-        
+            <li><i class="fas fa-file"></i><a href="#user-article-show.php">Titre article</a></li>
+
         </ul>
     </div>
 
