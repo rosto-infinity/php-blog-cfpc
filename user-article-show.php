@@ -17,6 +17,13 @@ $query->execute(compact('article_id'));
 $article = $query->fetch();
 // var_dump($article);
 //  die;
+$sql = 'SELECT * FROM comments WHERE article_id= :article_id';
+$query = $pdo->prepare($sql);
+$query->execute(compact('article_id'));
+$commentaires = $query->fetchAll();
+
+
+
 //Statistiques
 
   //----------Nombre d'utilisateurs 
