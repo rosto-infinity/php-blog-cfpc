@@ -58,7 +58,7 @@
         /* Couleur de fond au survol */
     }
 </style>
-<h1>Nos articles</h1>
+<h1>Nos articles++</h1>
 <p>Il y a <?= count($allArticles); ?> articles</p>
 
 <!-- Affichage des erreurs et succès -->

@@ -18,12 +18,8 @@ function authenticateUser(PDO $pdo, string $email, string $password): string
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
-    if (!$user) {
-        return "Compte inexistant !";
-    }
-
-    if (!password_verify($password, $user['password'])) {
-        return "Mauvais mot de passe !";
+    if (!$user || !password_verify($password, $user['password'])) {
+        return "Idendifiant incorrect !";
     }
 
     // Set session variables

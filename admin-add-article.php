@@ -39,6 +39,7 @@ if (isset($_POST['add-article'])) {
   //Étape 4 : Le transfert définitif
       if (move_uploaded_file($file['tmp_name'], $path . $filename)) {
         $imagePath = $path . $filename;
+        
       } else {
         $error = "Erreur de téléchargement.";
       }
