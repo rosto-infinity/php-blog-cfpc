@@ -21,7 +21,7 @@ $sql = 'SELECT comments.*, users.username
  FROM comments
  JOIN users ON comments.user_id = users.id
  WHERE article_id= :article_id';
-
+ 
 $query = $pdo->prepare($sql);
 $query->execute(compact('article_id'));
 $commentaires = $query->fetchAll();

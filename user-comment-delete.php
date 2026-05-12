@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+session_start();
+require_once 'database/database.php';
+require_once 'app/Enums/Role.php';
+
+if (! isset($_SESSION['auth'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$user_id = $_SESSION['auth']['id'];
+$comment_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+if ($comment_id === null || $comment_id === false) {
+    exit('ID de commentaire invalide.');
+}
+
+// Vérifier si le commentaire existe et appartient à l'utilisateur connecté (ou admin)
+$query = $pdo->prepare('SELECT user_id FROM comments WHERE id = :comment_id');
+$query->execute(['comment_id' => $comment_id]);
+$comment = $query->fetch();
+
+
+if (! $comment) {
+    exit('Commentaire introuvable.');
+}
+
+$isAdmin = isset($_SESSION['auth']['role']) && $_SESSION['auth']['role'] === Role::ADMIN->value;
+if ($comment['user_id'] !== $user_id && !$isAdmin) {
+    exit('Vous ne pouvez pas supprimer ce commentaire.');
+}
+
+// -Supprimer le commentaire
+$query = $pdo->prepare('DELETE FROM comments WHERE id = :comment_id');
+$query->execute(['comment_id' => $comment_id]);
+
+header('Location: user-article-show.php?id='.$_GET['article_id']);
+exit;
