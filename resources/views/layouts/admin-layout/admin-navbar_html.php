@@ -18,7 +18,7 @@
 		<span class="divider"></span>
 		<div class="profile">
 			<img src="publicAll/images/profil.png" alt="">
-			<ul class="profile-link">
+		<ul class="profile-link">
 				<li><a href="user-dashboard.php"><i class='bx bxs-user-circle icon'></i> Dashboard</a></li>
 				 <li>
                 <a href="user-update.php?id=<?= $_SESSION['auth']['id'] ?? '' ?>">
