@@ -13,8 +13,9 @@
 				</ul>
 			</li>
 
-			<li><a href="#"><i class='bx bxs-chart icon'></i> Charts</a></li>
-			<li><a href="#"><i class='bx bxs-widget icon'></i> Widgets</a></li>
+			<li><a href="admin-index-users.php"><i class='bx bxs-group icon' ></i> Utilisateurs</a></li>
+			<li><a href="admin-index-comments.php"><i class='bx bxs-comment-detail icon' ></i> Commentaires</a></li>
+		
 			<li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon'></i> Tables</a></li>
 
