@@ -31,7 +31,7 @@ $commentaires = $query->fetchAll();
 //Statistiques
 
   //----------Nombre d'utilisateurs 
-  $userCount = $pdo->query('SELECT COUNT(*) AS count FROM users')->fetch(PDO::FETCH_ASSOC)['count'];
+  $usersCount = $pdo->query('SELECT COUNT(*) AS count FROM users')->fetch(PDO::FETCH_ASSOC)['count'];
 $commentsCount = $pdo->query('SELECT COUNT(*) AS count FROM comments')->fetch(PDO::FETCH_ASSOC)['count'];
   $articlesCount = $pdo->query('SELECT COUNT(*) AS count FROM articles')->fetch(PDO::FETCH_ASSOC)['count'];
 
@@ -41,9 +41,15 @@ $latestArticles = $pdo->query('SELECT * FROM articles ORDER BY created_at DESC L
 
 
 $pageTitle = 'Affichage d\'un article';
-ob_start();
-require_once 'resources/views/blog/user-article-show_html.php';
-$pageContent = ob_get_clean();
-require_once 'resources/views/layouts/blog-layout/blog-layout_html.php';
 
-
+render('blog/user-article-show', [
+  'pageTitle' => $pageTitle,
+  'article' => $article,
+  'article_id' => $article_id,
+  'commentaires' => $commentaires,
+   'usersCount' => $usersCount,
+    'commentsCount' => $commentsCount,
+    'articlesCount' => $articlesCount,
+    'latestArticles' => $latestArticles
+], 'blog-layout'
+);

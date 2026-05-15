@@ -371,7 +371,7 @@
 
         <div class="stats">
             <h3><i class="fas fa-chart-bar"></i> Statistiques</h3>
-            <p><i class="fas fa-users"></i> <u> Nombre d'utilisateurs : <?= $userCount ?? ''  ?></u></p>
+            <p><i class="fas fa-users"></i> <u> Nombre d'utilisateurs : <?= $usersCount ?? ''  ?></u></p>
             <p><i class="fas fa-comments"></i> Nombre de commentaires : <u><?= $commentsCount ?? '' ?></u></p>
             <p><i class="fas fa-file-alt"></i> Nombre d'articles : <u><?= $articlesCount ?? '' ?></u></p>
 

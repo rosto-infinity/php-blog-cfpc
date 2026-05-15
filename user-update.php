@@ -10,8 +10,7 @@ require_once 'app/helpers.php';
 
 // Vérification de l'authentification
 if (! isset($_SESSION['auth']) || !is_array($_SESSION['auth'])) {
-    header('Location: login.php');
-    exit();
+    redirect('login.php');
 }
 
 $errors = [];
@@ -97,10 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     }
 }
 
-$pageTitle = 'Éditer l\'utilisateur';
-ob_start();
-require_once 'resources/views/users/user-update_html.php';
-$pageContent = ob_get_clean();
-require_once 'resources/views/layouts/user-layout/layout-user_html.php';
+ $pageTitle = 'Éditer l\'utilisateur';
 
+
+render('users/user-update',[
+    'user' => $user,
+    'errors' => $errors,
+    'success' => $success,
+    'pageTitle' => $pageTitle,
+
+],"user-layout");
 
