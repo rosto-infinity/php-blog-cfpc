@@ -41,10 +41,6 @@ $latestArticles = $pdo->query('SELECT * FROM articles ORDER BY created_at DESC L
 
 
 $pageTitle = 'Affichage d\'un article';
-// ob_start();
-// require_once 'resources/views/blog/user-article-show_html.php';
-// $pageContent = ob_get_clean();
-// require_once 'resources/views/layouts/blog-layout/blog-layout_html.php';
 
 render('blog/user-article-show', [
   'pageTitle' => $pageTitle,
