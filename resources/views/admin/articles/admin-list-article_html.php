@@ -108,7 +108,7 @@ if (! empty($errors)) { ?>
                 
                 <td><?= htmlspecialchars($article['created_at']) ?></td>
                 <td style="display: flex; justify-content: center; align-items: center;">
-                    <a href="article.php?id=<?= urlencode($article['id']); ?>">
+                    <a href="user-article-show.php?id=<?= urlencode($article['id']); ?>">
                         <i class='bx bx-show'></i>Show
                     </a>
                     <a href="admin-update-article.php?id=<?= urlencode($article['id']); ?>">
