@@ -20,25 +20,8 @@ $currentPage = (int)($_GET['page'] ?? 1); //Page actuelle
 $totalPages = (int)ceil($totalItems / $itemsPerPage); //Total des pages des articles
 
 $offset = ($currentPage - 1) * $itemsPerPage;
-$sql = "SELECT 
-            articles.id,
-            articles.title,
-            articles.introduction,
-            articles.image,
-            articles.created_at,
-            (SELECT COUNT(*) FROM comments WHERE comments.article_id) AS comment_count
-        FROM articles 
-        ORDER BY created_at DESC 
-        LIMIT :limit OFFSET :offset";
 
-$query = $pdo->prepare($sql);
-$query->bindValue(param: ':limit', value: $itemsPerPage, type: PDO::PARAM_INT);
-$query->bindValue(param: ':offset', value: $itemsPerPage, type: PDO::PARAM_INT);
-$query->execute();
-$articles = $query->fetchAll();
-
-
-
+$articles = findAllArticles($itemsPerPage,$offset);
 
 
 render('blog/index', [

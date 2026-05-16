@@ -46,7 +46,11 @@
                     </div>
                     <p class="article-excerpt"><?= htmlspecialchars(substr($article['introduction'], 0, 120)) ?>...</p>
                     <div class="article-footer">
-                       
+<span class="article-comments">
+    <i class='bx bx-comment-dots'>
+    </i>
+     <?= $article['comment_count'] ?> commentaire<?= $article['comment_count']>1 ? 's' : '' ?>
+</span>
                         <a href="user-article-show.php?id=<?= urlencode((string)$article['id']); ?>" class="read-more">
                             Lire <i class='bx bx-chevron-right'></i>
                         </a>
