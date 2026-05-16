@@ -13,10 +13,26 @@ if ($_SESSION['auth']['role'] !== Role::ADMIN->value)
     header('Location: index.php');
     exit();
 }
+// Gestion de la recherche
+$searchTerm = '';
+if (isset($_POST['search'])) {
+    $searchTerm = clean_input((string) ($_POST['search'] ?? ''));
+}
+// Gestion des messages flash de succès
+$success = [];
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']);
+}
+$allArticles= findAllArticles(null, null, $searchTerm);
 
+$pageTitle = 'Page Add articles';
 
-$pageTitle = 'List Articles';
-ob_start();
-require_once 'resources/views/admin/articles/admin-list-article_html.php';
-$pageContent = ob_get_clean();
-require_once 'resources/views/layouts/admin-layout/admin-layout_html.php';
+// Début du tampon de la page de sortie
+render('admin/articles/admin-list-article', [
+    'pageTitle' => $pageTitle,
+    'allArticles' => $allArticles,
+    'success' => $success,
+    'searchTerm' => $searchTerm
+], 'admin-layout');
+

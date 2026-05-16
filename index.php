@@ -9,12 +9,7 @@ require_once 'flash.php';
 
 //Requete comptant le totales des articles
 
-$totalQuery = $pdo->prepare('SELECT COUNT(*) FROM articles');
-$totalQuery->execute();
-$totalItems = (int)$totalQuery->fetchColumn();
-// var_dump($totalItems);
-// die;
-
+$totalItems= countArticles();
 $itemsPerPage = 12; //Nbre d'articles par pages
 $currentPage = (int)($_GET['page'] ?? 1); //Page actuelle
 $totalPages = (int)ceil($totalItems / $itemsPerPage); //Total des pages des articles

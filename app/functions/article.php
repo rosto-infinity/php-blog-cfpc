@@ -8,7 +8,7 @@ function countArticles(): int
 {
   $pdo = getPdo();
   $query = $pdo->prepare('SELECT COUNT(*) FROM articles');
-  return $query->fetchColumn();
+  return (int)$query->fetchColumn();
 }
 
 function findAllArticles( ?int $limit = null , ?int $offset = null , string  $searchTerm  =''): array
@@ -18,12 +18,16 @@ function findAllArticles( ?int $limit = null , ?int $offset = null , string  $se
     SELECT 
             articles.*,
             (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.id) AS comment_count
-        FROM articles ORDER BY created_at DESC
-        LIMIT :limit OFFSET :offset
+        FROM articles  
      ';
   if (!empty($searchTerm)) {
     $sql .= ' WHERE title LIKE :searchTerm OR introduction LIKE :searchTerm';
   }
+ $sql .= ' ORDER BY created_at DESC';
+
+ if ($limit !== null  && $offset !== null ) {
+  $sql .=  '  LIMIT :limit OFFSET :offset';
+ }
 
   $resultats = $pdo->prepare($sql);
   if (!empty($searchTerm)) {
@@ -36,3 +40,17 @@ function findAllArticles( ?int $limit = null , ?int $offset = null , string  $se
   $resultats->execute();
   return  $resultats->fetchAll(PDO::FETCH_ASSOC);
 }
+
+ /**
+ * Récupère un article spécifique par son ID
+ */
+function findArticle(int $id): array|false
+{
+    $pdo = getPdo();
+    $sql = 'SELECT * FROM articles WHERE id = :id';
+    $query = $pdo->prepare($sql);
+    $query->execute(['id' => $id]);
+    return $query->fetch(PDO::FETCH_ASSOC);
+}
+
+

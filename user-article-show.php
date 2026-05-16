@@ -9,14 +9,8 @@ require_once 'app/Enums/Role.php';
 require_once 'app/helpers.php';
 
 $article_id = $_GET['id'];
-// var_dump($article_id);
-// die;
-$sql="SELECT * FROM articles WHERE id = :article_id ";
-$query = $pdo->prepare($sql);
-$query->execute(compact('article_id'));
-$article = $query->fetch();
-// var_dump($article);
-//  die;
+$article =findArticle((int)$article_id);
+
 $sql = 'SELECT comments.*, users.username
  FROM comments
  JOIN users ON comments.user_id = users.id
@@ -29,19 +23,13 @@ $commentaires = $query->fetchAll();
 
 
 //Statistiques
+  $usersCount = countUsers();
+  $commentsCount = countComments();
+  $articlesCount = countArticles();
 
-  //----------Nombre d'utilisateurs 
-  $usersCount = $pdo->query('SELECT COUNT(*) AS count FROM users')->fetch(PDO::FETCH_ASSOC)['count'];
-$commentsCount = $pdo->query('SELECT COUNT(*) AS count FROM comments')->fetch(PDO::FETCH_ASSOC)['count'];
-  $articlesCount = $pdo->query('SELECT COUNT(*) AS count FROM articles')->fetch(PDO::FETCH_ASSOC)['count'];
-
-$latestArticles = $pdo->query('SELECT * FROM articles ORDER BY created_at DESC LIMIT  5')->fetch(PDO::FETCH_ASSOC);
-
-
-
+  $latestArticles = findAllArticles(5,0);
 
 $pageTitle = 'Affichage d\'un article';
-
 render('blog/user-article-show', [
   'pageTitle' => $pageTitle,
   'article' => $article,
