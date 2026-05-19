@@ -28,3 +28,22 @@ function findCommentsByArticles(int $article_id): array
   $query->execute(compact('article_id'));
   return  $query->fetchAll();
 }
+
+
+function insertComment(string $content, int $article_id, int $user_id ): bool{
+  $pdo = getPdo();
+
+   $query = $pdo->prepare('INSERT INTO comments (content, article_id, user_id, created_at) VALUES (:content, :article_id, :user_id, NOW())');
+   return $query->execute(compact('content', 'article_id', 'user_id'));
+
+}
+
+/**
+ * Supprime un commentaire
+ */
+function deleteComment(int $id): bool
+{
+    $pdo = getPdo();
+    $query = $pdo->prepare('DELETE FROM comments WHERE id = :id');
+    return $query->execute(['id' => $id]);
+}

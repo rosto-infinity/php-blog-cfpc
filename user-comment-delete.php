@@ -5,11 +5,9 @@ declare(strict_types=1);
 session_start();
 require_once 'database/database.php';
 require_once 'app/Enums/Role.php';
+require_once 'app/helpers.php';
 
-if (! isset($_SESSION['auth'])) {
-    header('Location: login.php');
-    exit;
-}
+checkAuth();
 
 $user_id = $_SESSION['auth']['id'];
 $comment_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -34,8 +32,7 @@ if ($comment['user_id'] !== $user_id && !$isAdmin) {
 }
 
 // -Supprimer le commentaire
-$query = $pdo->prepare('DELETE FROM comments WHERE id = :comment_id');
-$query->execute(['comment_id' => $comment_id]);
+deleteComment((int) $comment_id);
 
-header('Location: user-article-show.php?id='.$_GET['article_id']);
-exit;
+redirect('user-article-show.php?id='.$_GET['article_id']);
+
