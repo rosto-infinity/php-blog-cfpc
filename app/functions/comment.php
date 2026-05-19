@@ -37,7 +37,17 @@ function insertComment(string $content, int $article_id, int $user_id ): bool{
    return $query->execute(compact('content', 'article_id', 'user_id'));
 
 }
-
+/**
+ * Récupère un commentaire spécifique par son ID
+ */
+function findCommentById(int $id): array|false
+{
+    $pdo = getPdo();
+    $sql = 'SELECT * FROM comments WHERE id = :id';
+    $query = $pdo->prepare($sql);
+    $query->execute(['id' => $id]);
+    return $query->fetch(PDO::FETCH_ASSOC);
+}
 /**
  * Supprime un commentaire
  */

@@ -17,10 +17,8 @@ if ($comment_id === null || $comment_id === false) {
 }
 
 // Vérifier si le commentaire existe et appartient à l'utilisateur connecté (ou admin)
-$query = $pdo->prepare('SELECT user_id FROM comments WHERE id = :comment_id');
-$query->execute(['comment_id' => $comment_id]);
-$comment = $query->fetch();
 
+$comment = findCommentById((int) $comment_id);
 
 if (! $comment) {
     exit('Commentaire introuvable.');
