@@ -91,7 +91,7 @@
                                     <span class="comment-date">Posté le : <?= $comment['created_at'] ?></span>
                                     <!-- Lien vers l'article -->
                                     <?php if (! empty($comment['article_id'])) { ?>
-                                        <a href="article.php?id=<?= urlencode($comment['article_id']) ?>" class="article-link">
+                                        <a href="user-article-show.php?id=<?= urlencode($comment['article_id']) ?>" class="article-link">
                                             → Voir l'article : <?= htmlspecialchars($comment['article_title']) ?>
                                         </a>
                                     <?php } ?>

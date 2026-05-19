@@ -13,32 +13,26 @@ if ($_SESSION['auth']['role'] !== Role::ADMIN->value)
     header('Location: index.php');
     exit();
 }
-
+// Gestion de la recherche
 $searchTerm = '';
-if(isset($_POST['search'])) {
-  $searchTerm =clean_input((string) ($_POST['search'] ?? ''));
-  }
-
-$query = 'SELECT * FROM articles';
-if(!empty($searchTerm)){
-  $query .=' WHERE title LIKE :searchTerm OR introduction LIKE :searchTerm';
+if (isset($_POST['search'])) {
+    $searchTerm = clean_input((string) ($_POST['search'] ?? ''));
 }
-$query .= ' ORDER BY created_at DESC';
- $resultats= $pdo->prepare($query);
- if(!empty($searchTerm)){
-$resultats->bindValue(':searchTerm', '%' .$searchTerm. '%');
- }
-$resultats->execute();
- $allArticles = $resultats->fetchAll(PDO::FETCH_ASSOC);
-
+// Gestion des messages flash de succès
 $success = [];
-$flash = flash_get();
-if ($flash !== null) {
-    $success['update'] = $flash['message'];
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']);
 }
+$allArticles= findAllArticles(null, null, $searchTerm);
 
-$pageTitle = 'List Articles';
-ob_start();
-require_once 'resources/views/admin/articles/admin-list-article_html.php';
-$pageContent = ob_get_clean();
-require_once 'resources/views/layouts/admin-layout/admin-layout_html.php';
+$pageTitle = 'Page Add articles';
+
+// Début du tampon de la page de sortie
+render('admin/articles/admin-list-article', [
+    'pageTitle' => $pageTitle,
+    'allArticles' => $allArticles,
+    'success' => $success,
+    'searchTerm' => $searchTerm
+], 'admin-layout');
+

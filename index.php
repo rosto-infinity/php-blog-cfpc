@@ -9,36 +9,18 @@ require_once 'flash.php';
 
 //Requete comptant le totales des articles
 
-$totalQuery = $pdo->prepare('SELECT COUNT(*) FROM articles');
-$totalQuery->execute();
-$totalItems = (int)$totalQuery->fetchColumn();
-// var_dump($totalItems);
-// die;
-
+$totalItems= countArticles();
 $itemsPerPage = 12; //Nbre d'articles par pages
 $currentPage = (int)($_GET['page'] ?? 1); //Page actuelle
 $totalPages = (int)ceil($totalItems / $itemsPerPage); //Total des pages des articles
 
 $offset = ($currentPage - 1) * $itemsPerPage;
-//page 1 : (1-1) * 12 = 0   => 1 à 12  
-//page 2  :  (2-1) * 12 = 12   =>  12 à 24   
-//page 3  :  (3-1) * 12 = 24   => 24 à 36
-//.
-//.
-//.
-$sql = "SELECT * FROM articles ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
-$query = $pdo->prepare($sql);
-$query->bindValue(param: ':limit', value: $itemsPerPage, type: PDO::PARAM_INT);
-$query->bindValue(param: ':offset', value: $itemsPerPage, type: PDO::PARAM_INT);
-$query->execute();
-$articles = $query->fetchAll();
+
+$articles = findAllArticles($itemsPerPage,$offset);
 
 
-
-
-$pageTitle = 'Notre blog d\'accueil';
 render('blog/index', [
-  'pageTitle' => $pageTitle,
+  'pageTitle' => 'Notre blog d\'accueil',
   'articles' => $articles,
   'totalPages' => $totalPages,
   'currentPage' => $currentPage,
