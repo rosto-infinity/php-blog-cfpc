@@ -11,16 +11,7 @@ require_once 'app/helpers.php';
 $article_id = $_GET['id'];
 $article =findArticle((int)$article_id);
 
-$sql = 'SELECT comments.*, users.username
- FROM comments
- JOIN users ON comments.user_id = users.id
- WHERE article_id= :article_id';
- 
-$query = $pdo->prepare($sql);
-$query->execute(compact('article_id'));
-$commentaires = $query->fetchAll();
-
-
+$commentaires = findCommentsByArticles((int) $article_id);
 
 //Statistiques
   $usersCount = countUsers();
