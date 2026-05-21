@@ -18,20 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = htmlspecialchars($_POST['content']);
     $article_id = $_POST['article_id'];
 
-    // Validation : Vérifier si le champ "content" est vide
-    if (empty($content)) {
-        $_SESSION['error'] = 'Le champ commentaire est obligatoire.';
-        header('Location: user-article-show.php?id='.$article_id);
-        exit;
-    }
-
     // Vérification de l'existence de l'article
     if (! findArticle((int)$article_id)) {
         redirect('user-article-show.php?id=' .$article_id);
     }
+    // Validation : Vérifier si le champ "content" est vide
+    if (empty($content)) {
+        flash_set('error', 'Le champ commentaire est obligatoire.');   
+    }else{
+        // Insertion du commentaire
+        insertComment($content,(int) $article_id, (int) $user_auth);
+    }
 
-    // Insertion du commentaire
-    insertComment($content,(int) $article_id, (int) $user_auth);
+
 
  // Rediriger vers la page de l'article après l'ajout du commentaire
  redirect('user-article-show.php?id=' .$article_id);
