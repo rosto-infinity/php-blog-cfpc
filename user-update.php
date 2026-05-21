@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     if (empty($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'Email non valide';
     } else {
-         $userExistEmail= findUserByEmailExcept($email, (int)$userId);
+        $userExistEmail = findUserByEmailExcept($email, (int)$userId);
         if ($userExistEmail) {
             $errors['email'] = 'Cet email est déjà utilisé';
         }
@@ -65,33 +65,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
     // -Mise à jour des informations de l'utilisateur
     if (empty($errors)) {
-        $query = 'UPDATE users SET username = ?, email = ?';
-        $params = [$username, $email];
-
-        // Si un nouveau mot de passe est fourni
+        $hashedPassword = $user['password'];
         if (! empty($password)) {
-            $query .= ', password = ?';
-            $params[] = password_hash($password, PASSWORD_BCRYPT);
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         }
 
-        $query .= ' WHERE id = ?';
-        $params[] = $userId;
-
+        $query = 'UPDATE users SET username = :username, email = :email, password = :hashedPassword WHERE id =:userId';
         $req = $pdo->prepare($query);
-        $req->execute($params);
+        $req->execute([
+            'username' => $username,
+            'email' => $email,
+            'hashedPassword' => $hashedPassword,
+            'userId' => $userId
+        ]);
 
         $success['update'] = 'Profil mis à jour avec succès !';
     }
 }
 
- $pageTitle = 'Éditer l\'utilisateur';
+$pageTitle = 'Éditer l\'utilisateur';
 
 
-render('users/user-update',[
+render('users/user-update', [
     'user' => $user,
     'errors' => $errors,
     'success' => $success,
     'pageTitle' => $pageTitle,
 
-],"user-layout");
-
+], "user-layout");
