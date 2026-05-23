@@ -37,6 +37,23 @@ function insertComment(string $content, int $article_id, int $user_id ): bool{
    return $query->execute(compact('content', 'article_id', 'user_id'));
 
 }
+
+/**
+ * Récupère tous les commentaires laissés par un utilisateur spécifique
+ */
+function findCommentsByUser(int $user_id): array
+{
+    $pdo = getPdo();
+    $sql = 'SELECT c.id, c.content, c.created_at, a.id AS article_id, a.title AS article_title, a.slug AS article_slug
+            FROM comments c
+            LEFT JOIN articles a ON c.article_id = a.id
+            WHERE c.user_id = :user_id
+            ORDER BY c.created_at DESC';
+            
+    $query = $pdo->prepare($sql);
+    $query->execute(['user_id' => $user_id]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
 /**
  * Récupère un commentaire spécifique par son ID
  */
