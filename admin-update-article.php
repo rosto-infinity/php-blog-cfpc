@@ -6,7 +6,6 @@ require_once 'database/database.php';
 require_once 'flash.php';
 require_once 'app/Enums/Role.php';
 require_once 'app/helpers.php';
-// ------Vérifiez les autorisations d'accès à la page
 
 if ($_SESSION['auth']['role'] !== Role::ADMIN->value) {
   header('Location: index.php');
@@ -28,10 +27,7 @@ $currentImage = null; // Initialisation explicite
 // Récupération des informations d'un article à modifier
 if (isset($_GET['id'])) {
     $articleId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    $sql = 'SELECT * FROM articles WHERE id = ?';
-    $query = $pdo->prepare($sql);
-    $query->execute([$articleId]);
-    $article = $query->fetch(PDO::FETCH_ASSOC);
+     $article = findArticle($articleId);
 
     // Récupération des données APRÈS la requête
     $title = $article['title'] ?? '';
@@ -81,55 +77,31 @@ if (isset($_POST['update'])) {
         }
     }
 
+  
     // Validation des données
     if (empty($title) || empty($slug) || empty($introduction) || empty($content)) {
         $messages['errors'][] = 'Veuillez remplir tous les champs obligatoires du formulaire !';
     } else {
         // Mise à jour de l'article dans la base de données
-        $query = $pdo->prepare('UPDATE articles SET 
-            title = :title, 
-            slug = :slug, 
-            introduction = :introduction, 
-            content = :content,
-            image = :image,
-            updated_at = NOW()
-            WHERE id = :articleId');
-
-        $query->execute([
-            'title' => $title,
-            'slug' => $slug,
-            'introduction' => $introduction,
-            'content' => $content,
-            'image' => $currentImage, // Assurez-vous que le nom de colonne correspond à votre BDD
-            'articleId' => $articleId,
-        ]);
-
-        if ($query->rowCount() > 0) {
-            flash_set('success', 'Article mis à jour avec succès!');
+        if (updateArticle((int) $articleId, $title, $slug, $introduction, $content, $currentImage)) {
+            $messages['success'][] = 'Article mis à jour avec succès!';
             // Rafraîchir les données
-            $query = $pdo->prepare('SELECT * FROM articles WHERE id = ?');
-            $query->execute([$articleId]);
-            $article = $query->fetch(PDO::FETCH_ASSOC);
+            $article = findArticle((int) $articleId);
             $currentImage = $article['image'] ?? null;
         } else {
             $messages['errors'][] = 'Aucune modification détectée ou erreur lors de la mise à jour';
         }
     }
+
     // -- Redirection vers la page d'admin
-    header('Location: admin-list-article.php');
-    exit();
+    redirect('admin-list-article.php');
 }
 
 $pageTitle = 'Éditer un article';
 
-// Début du tampon de la page de sortie
-ob_start();
-
-// Inclure le layout de la page d'accueil
-require_once 'resources/views/admin/articles/admin-update-article_html.php';
-
-// Récupération du contenu du tampon de la page d'accueil
-$pageContent = ob_get_clean();
-
-// Inclure le layout de la page de sortie
-require_once 'resources/views/layouts/admin-layout/admin-layout_html.php';
+render('admin/articles/admin-update-article', [
+    'pageTitle' => $pageTitle,
+    'article' => $article,
+    'articleId' => $articleId,
+    'messages' => $messages
+], 'admin-layout');

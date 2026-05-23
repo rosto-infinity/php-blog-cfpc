@@ -41,8 +41,8 @@ if (! empty($messages['errors'])) { ?>
         </div>
         
         <div class="form-control">
-            <label for="image">Image de l'article :</label>
-            <input type="file" name="image" id="image" accept="image/*">
+            <label for="a_image">Image de l'article :</label>
+            <input type="file" name="a_image" id="a_image" accept="image/*">
             
             <?php if (! empty($currentImage)) { ?>
                 <div class="current-image">

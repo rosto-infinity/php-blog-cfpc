@@ -11,10 +11,11 @@ require_once __DIR__ . '/functions/comment.php';
  */
 function checkAuth(): void
 {
-    if (!isset($_SESSION['auth']) || !is_array($_SESSION['auth'])) {
+    if (! isset($_SESSION['auth']['id'])) {
         redirect('login.php');
     }
 }
+
 
 /**
  * Vérifie si l'utilisateur est administrateur
