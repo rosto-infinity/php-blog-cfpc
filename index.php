@@ -9,7 +9,7 @@ require_once 'flash.php';
 
 //Requete comptant le totales des articles
 
-$totalItems= countArticles();
+$totalItems= Article::count();
 $itemsPerPage = 12; //Nbre d'articles par pages
 $currentPage = (int)($_GET['page'] ?? 1); //Page actuelle
 $totalPages = (int)ceil($totalItems / $itemsPerPage); //Total des pages des articles

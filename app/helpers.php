@@ -6,6 +6,9 @@ require_once __DIR__ . '/functions/article.php';
 require_once __DIR__ . '/functions/user.php';
 require_once __DIR__ . '/functions/comment.php';
 
+
+require_once __DIR__ .'/Models/Article.php';
+
 /**
  * Vérifie si l'utilisateur est connecté
  */
