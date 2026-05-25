@@ -9,14 +9,14 @@ require_once 'app/Enums/Role.php';
 require_once 'app/helpers.php';
 
 $article_id = $_GET['id'];
-$article =findArticle((int)$article_id);
+$article =Article::find((int)$article_id);
 
 $commentaires = findCommentsByArticles((int) $article_id);
 
 //Statistiques
   $usersCount = countUsers();
   $commentsCount = countComments();
-  $articlesCount = countArticles();
+  $articlesCount = Article::count();;
 
   $latestArticles = findAllArticles(5,0);
 
