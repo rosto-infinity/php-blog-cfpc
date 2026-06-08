@@ -309,9 +309,11 @@
         <h1 class="article-title"><?= $article['title'] ?? '' ?></h1>
 
         <?php
-
-        if (isset($_SESSION['error'])) { ?>
-            <div class="error-message"><?= $_SESSION['error'] ?></div>
+        $flash = flash_get();
+        if ($flash) { ?>
+            <div class="error-message">
+                <?= $flash['message'] ?>
+            </div>
         <?php } ?>
 
         <div class="article-body"><?= $article['content'] ?? '' ?></div><br><br>
@@ -378,11 +380,11 @@
         </div>
 
         <h3><i class="fas fa-newspaper"></i> Derniers articles</h3>
-       <ul>
-        <?php foreach ($latestArticles as $article) { ?>
-            <li><i class="fas fa-file"></i><a href="user-article-show.php?id=<?= $article['id'] ?>"><?= htmlspecialchars($article['title']) ?></a></li>
-        <?php } ?>
-    </ul>
+        <ul>
+            <?php foreach ($latestArticles as $article) { ?>
+                <li><i class="fas fa-file"></i><a href="user-article-show.php?id=<?= $article['id'] ?>"><?= htmlspecialchars($article['title']) ?></a></li>
+            <?php } ?>
+        </ul>
     </div>
 
 </div>

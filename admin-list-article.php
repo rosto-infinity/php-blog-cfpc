@@ -24,7 +24,8 @@ if (isset($_SESSION['success'])) {
     $success = $_SESSION['success'];
     unset($_SESSION['success']);
 }
-$allArticles= findAllArticles(null, null, $searchTerm);
+// Récupération de tous les articles avec gestion de la recherche
+$allArticles = Article::findAll(null, null, $searchTerm);
 
 $pageTitle = 'Page Add articles';
 

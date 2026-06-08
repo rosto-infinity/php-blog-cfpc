@@ -22,31 +22,31 @@ if (! empty($messages['errors'])) { ?>
 <div style="background-color: white; padding: 10px; margin-top: 15px;">
 
 
-    <form method="POST" action="admin-update-article.php?id=<?= $articleId ?>" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="<?= $articleId ?>">
+    <form method="POST" action="admin-update-article.php?id=<?= $article->id ?>" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?= $article->id ?>">
         
         <div class="form-control">
             <label for="title">Titre :</label>
-            <input type="text" name="title" id="title" value="<?= htmlspecialchars($title ?? '') ?>" >
+            <input type="text" name="title" id="title" value="<?= htmlspecialchars($article->title) ?>" >
         </div>
         
         <div class="form-control">
             <label for="introduction">Introduction :</label>
-            <textarea name="introduction" id="introduction" ><?= htmlspecialchars($introduction ?? '') ?></textarea>
+            <textarea name="introduction" id="introduction" ><?= htmlspecialchars($article->introduction) ?></textarea>
         </div>
         
         <div class="form-control">
             <label for="content">Contenu :</label>
-            <textarea name="content" id="content" class="ckeditor"><?= htmlspecialchars($content ?? '') ?></textarea>
+            <textarea name="content" id="content" class="ckeditor"><?= htmlspecialchars($article->content) ?></textarea>
         </div>
         
         <div class="form-control">
-            <label for="image">Image de l'article :</label>
-            <input type="file" name="image" id="image" accept="image/*">
+            <label for="a_image">Image de l'article :</label>
+            <input type="file" name="a_image" id="a_image" accept="image/*">
             
-            <?php if (! empty($currentImage)) { ?>
+            <?php if (! empty($article->image)) { ?>
                 <div class="current-image">
-                    <img src="<?= $currentImage ?>" alt="Image actuelle" style="max-width: 200px;">
+                    <img src="<?= htmlspecialchars($article->image) ?>" alt="Image actuelle" style="max-width: 200px;">
                     <label>
                         <input type="checkbox" name="delete_image" value="1">
                         Supprimer cette image

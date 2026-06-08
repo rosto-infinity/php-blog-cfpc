@@ -9,29 +9,16 @@ require_once 'app/Enums/Role.php';
 require_once 'app/helpers.php';
 
 // Vérification des autorisations admin
-
-if ( $_SESSION['auth']['role'] !== Role::ADMIN->value) {
-    header('Location: index.php');
-    exit();
-}
+checkAdmin();
 
 try {
-    // Requête pour récupérer tous les utilisateurs (sans updated_at)
-    $query = 'SELECT id, username, email, role, created_at 
-              FROM `users` 
-              ORDER BY created_at DESC';
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+     $users = User::findAll();
     $pageTitle = 'Gestion des utilisateurs';
 
-    ob_start();
-    include 'resources/views/admin/users/index-users_html.php';
-    $pageContent = ob_get_clean();
-
-    include 'resources/views/layouts/admin-layout/admin-layout_html.php';
+    render('admin/users/index-users', [
+        'pageTitle' => $pageTitle,
+        'users' => $users
+    ], 'admin-layout');
 
 } catch (PDOException $e) {
     exit('Erreur de base de données : '.$e->getMessage());

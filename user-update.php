@@ -9,9 +9,7 @@ require_once 'app/Enums/Role.php';
 require_once 'app/helpers.php';
 
 // Vérification de l'authentification
-if (! isset($_SESSION['auth']) || !is_array($_SESSION['auth'])) {
-    redirect('login.php');
-}
+checkAuth();
 
 $errors = [];
 $success = [];
@@ -26,14 +24,10 @@ if ($_SESSION['auth']['role'] === Role::ADMIN->value && isset($_GET['id'])) {
 }
 
 // Récupération des informations de l'utilisateur
-$query = 'SELECT * FROM users WHERE id = ?';
-$req = $pdo->prepare($query);
-$req->execute([$userId]);
-$user = $req->fetch();
+$user = findUserById((int) $userId);
 
 if (! $user) {
-    header('Location: user-dashboard.php');
-    exit();
+    redirect('user-dashboard.php');
 }
 
 // -Traitement du formulaire de mise à jour
@@ -48,11 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     if (empty($username) || ! preg_match('#^[a-zA-Z0-9_]+$#', $username)) {
         $errors['username'] = 'Pseudo non valide';
     } else {
-        $query = 'SELECT * FROM users WHERE username = ? AND id != ?';
-        $req = $pdo->prepare($query);
-        $req->execute([$username, $userId]);
-
-        if ($req->fetch()) {
+        $userExistUsername = findUserByUsernameExcept($username, (int)$userId);
+        if ($userExistUsername) {
             $errors['username'] = 'Ce pseudo est déjà pris';
         }
     }
@@ -61,11 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     if (empty($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'Email non valide';
     } else {
-        $query = 'SELECT * FROM users WHERE email = ? AND id != ?';
-        $req = $pdo->prepare($query);
-        $req->execute([$email, $userId]);
-
-        if ($req->fetch()) {
+        $userExistEmail = findUserByEmailExcept($email, (int)$userId);
+        if ($userExistEmail) {
             $errors['email'] = 'Cet email est déjà utilisé';
         }
     }
@@ -77,33 +65,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
     // -Mise à jour des informations de l'utilisateur
     if (empty($errors)) {
-        $query = 'UPDATE users SET username = ?, email = ?';
-        $params = [$username, $email];
-
-        // Si un nouveau mot de passe est fourni
+        $hashedPassword = $user['password'];
         if (! empty($password)) {
-            $query .= ', password = ?';
-            $params[] = password_hash($password, PASSWORD_BCRYPT);
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         }
 
-        $query .= ' WHERE id = ?';
-        $params[] = $userId;
-
+        $query = 'UPDATE users SET username = :username, email = :email, password = :hashedPassword WHERE id =:userId';
         $req = $pdo->prepare($query);
-        $req->execute($params);
+        $req->execute([
+            'username' => $username,
+            'email' => $email,
+            'hashedPassword' => $hashedPassword,
+            'userId' => $userId
+        ]);
 
         $success['update'] = 'Profil mis à jour avec succès !';
     }
 }
 
- $pageTitle = 'Éditer l\'utilisateur';
+$pageTitle = 'Éditer l\'utilisateur';
 
 
-render('users/user-update',[
+render('users/user-update', [
     'user' => $user,
     'errors' => $errors,
     'success' => $success,
     'pageTitle' => $pageTitle,
 
-],"user-layout");
-
+], "user-layout");
