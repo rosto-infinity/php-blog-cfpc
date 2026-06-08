@@ -23,14 +23,17 @@ if ($id === false) {
     redirect("error.php?message=Id de l'article non valide.");}
 
 // 2. -Vérification que l'article existe
-$article = findArticle($id);
+// $article = findArticle($id);
+$article = Article::find($id);
+
 
 if (!$article) {
     redirect("error.php?message=L'article $id n'existe pas, vous ne pouvez donc pas le supprimer !");
 }
 
 // 3.- Suppression de l'article
-deleteArticle($id);
+// deleteArticle($id);
+$article->delete();
 
 // 4.- Redirection vers la page d'accueil
 redirect('admin-list-article.php');

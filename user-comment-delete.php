@@ -18,7 +18,7 @@ if ($comment_id === null || $comment_id === false) {
 
 // Vérifier si le commentaire existe et appartient à l'utilisateur connecté (ou admin)
 
-$comment = findCommentById((int) $comment_id);
+$comment = Comment::find((int) $comment_id);
 
 if (! $comment) {
     exit('Commentaire introuvable.');
@@ -30,7 +30,7 @@ if ($comment['user_id'] !== $user_id && !$isAdmin) {
 }
 
 // -Supprimer le commentaire
-deleteComment((int) $comment_id);
+Comment::delete((int) $comment_id);
 
 redirect('user-article-show.php?id='.$_GET['article_id']);
 

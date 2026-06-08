@@ -12,7 +12,7 @@ require_once 'app/helpers.php';
 checkAdmin();
 
 try {
-    $users = findAllUsers();
+     $users = User::findAll();
     $pageTitle = 'Gestion des utilisateurs';
 
     render('admin/users/index-users', [

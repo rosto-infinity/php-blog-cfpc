@@ -17,9 +17,8 @@ checkAdmin();
 $users = findUsersWithCommentCount();
 
 // Récupérer les commentaires + infos de l'article pour chaque utilisateur
-foreach ($users as &$user) {
-    $user['comments'] = findCommentsByUser($user['id']);
-}
+// Récupérer les utilisateurs AVEC leur nombre de commentaires
+$users = User::allWithCommentCount();
 
 $pageTitle = 'Récupérer tous les utilisateurs';
 render('admin/users/index-comments', [

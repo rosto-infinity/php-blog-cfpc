@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $article_id = $_POST['article_id'];
 
     // Vérification de l'existence de l'article
-    if (! findArticle((int)$article_id)) {
+    if (! Article::find((int)$article_id)) {
         redirect('user-article-show.php?id=' .$article_id);
     }
     // Validation : Vérifier si le champ "content" est vide
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash_set('error', 'Le champ commentaire est obligatoire.');   
     }else{
         // Insertion du commentaire
-        insertComment($content,(int) $article_id, (int) $user_auth);
+        Comment::save($content,(int) $article_id, (int) $user_auth);
     }
 
 

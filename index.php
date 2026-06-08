@@ -16,7 +16,7 @@ $totalPages = (int)ceil($totalItems / $itemsPerPage); //Total des pages des arti
 
 $offset = ($currentPage - 1) * $itemsPerPage;
 
-$articles = findAllArticles($itemsPerPage,$offset);
+$articles = Article::findAll($itemsPerPage,$offset);
 
 
 render('blog/index', [

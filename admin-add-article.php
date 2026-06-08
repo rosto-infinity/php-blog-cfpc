@@ -50,11 +50,12 @@ if (isset($_POST['add-article'])) {
         $error = 'Veuillez remplir tous les champs obligatoires du formulaire !';
     } else {
         // Vérification de l'unicité du slug
-        if (countArticlesBySlug($slug) > 0) {
+        if (Article::slugExists($slug)) {
             $error = "Le slug '$slug' existe déjà. Veuillez en choisir un autre.";
         } else {
-            // Insertion du nouvel article dans la base de données
-            if (insertArticle($title, $slug, $introduction, $content, $imagePath)) {
+            // Création de l'objet Article et sauvegarde
+            $article = new Article(title: $title, slug: $slug, introduction: $introduction, content: $content, image: $imagePath);
+            if ($article->save()) {
                 $_SESSION['success']['update'] = 'Article créé avec succès!';
                 redirect('admin-list-article.php');
             } else {
@@ -64,8 +65,8 @@ if (isset($_POST['add-article'])) {
     }
 }
 
-// Récupération de tous les articles avec gestion des images
-$allArticles = findAllArticles();
+// Récupération de tous les articles
+$allArticles = Article::findAll();
 
 $pageTitle = 'Page  Add articles';
 

@@ -15,23 +15,18 @@ function authenticateUser(string $email, string $password): string {
         return "Tous les champs doivent être complétés !";
     }
 
-    $user = findUserByEmailOrUsername($email);
+   $user = User::findByEmailOrUsername($email);
 
     if (!$user) {
         return "Compte inexistant !";
     }
-
-    if (!password_verify($password, $user['password'])) {
+   
+    if (!$user->verifyPassword($password)) {
         return "Mauvais mot de passe !";
     }
 
     // Set session variables
-    $_SESSION['auth'] = [
-        'id' => $user['id'],
-        'username' => $user['username'],
-        'email' => $user['email'],
-        'role' => $user['role']
-    ];
+    $user->toSession();
 
     return "success";
 }

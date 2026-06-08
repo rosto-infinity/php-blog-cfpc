@@ -4,10 +4,12 @@ declare(strict_types=1);
 require_once __DIR__ . '/Enums/Role.php';
 require_once __DIR__ . '/functions/article.php';
 require_once __DIR__ . '/functions/user.php';
-require_once __DIR__ . '/functions/comment.php';
+// require_once __DIR__ . '/functions/comment.php';
 
 
 require_once __DIR__ .'/Models/Article.php';
+require_once __DIR__ .'/Models/Comment.php';
+require_once __DIR__ .'/Models/User.php';
 
 /**
  * Vérifie si l'utilisateur est connecté
